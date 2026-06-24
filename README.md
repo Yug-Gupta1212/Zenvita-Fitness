@@ -205,42 +205,6 @@ npm audit fix
 
 ---
 
-# Commands for Contributors
-
-Clone repository:
-
-```bash
-git clone https://github.com/Yug-Gupta1212/Zenvita-Fitness.git
-```
-
-Move into project:
-
-```bash
-cd Zenvita-Fitness
-```
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Run locally:
-
-```bash
-npm run dev
-```
-
-Create a commit:
-
-```bash
-git add .
-git commit -m "Your commit message"
-git push
-```
-
----
-
 # Author
 
 Yug Gupta
