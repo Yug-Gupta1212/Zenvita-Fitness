@@ -1,69 +1,253 @@
-# Zenvita — Local Development
+# Zenvita-Fitness
 
-Lightweight local build of the Zenith health tracking UI used for development and testing.
+A modern Health & Fitness Tracking application built with React, TypeScript, and Vite. The platform helps users monitor their workouts, nutrition, and sleep habits through an intuitive dashboard.
 
-## Overview
-This workspace contains a React + Vite app (TanStack starter) for tracking workouts, nutrition and sleep. A small mock database is provided in `src/lib/supabase.ts` (localStorage backed) so you can run the app without a live Supabase instance.
+## Features
 
-## Prerequisites
-- Node 18+ (or compatible)
-- npm
+* Workout Tracking
+* Nutrition Monitoring
+* Sleep Tracking & Analysis
+* Responsive Dashboard UI
+* Local Storage Persistence
+* Mock Authentication
+* Optional Supabase Integration
 
-Optional (for a real Supabase backend): set these environment variables in a `.env` file at the project root:
+---
 
-- `VITE_SUPABASE_URL`
-- `VITE_SUPABASE_ANON_KEY`
+## Tech Stack
 
-If those are not provided the app uses the local mock DB saved in `localStorage`.
+* React
+* TypeScript
+* Vite
+* TanStack Router
+* Tailwind CSS
+* Supabase (Optional)
 
-## Quick start
-1. Install dependencies
+---
+
+# Getting Started
+
+Follow these steps to run the project locally.
+
+## 1. Clone the Repository
+
+```bash
+git clone https://github.com/Yug-Gupta1212/Zenvita-Fitness.git
+```
+
+## 2. Navigate to the Project Folder
+
+```bash
+cd Zenvita-Fitness
+```
+
+## 3. Install Dependencies
 
 ```bash
 npm install
 ```
 
-2. Start dev server
+## 4. Start the Development Server
 
 ```bash
 npm run dev
 ```
 
-3. Open http://localhost:5173 (or the port Vite prints).
+## 5. Open the Application
 
-4. Sign in (mock auth):
-   - Email: `alex@zenvita.ai`
-   - Password: `password123`
+Open your browser and visit:
 
-If you signed out or no session exists, use the login screen to sign in with those credentials.
-
-## How to log Sleep (UI)
-- Navigate to the Sleep page: `Sleep` in the left nav.
-- Click the large orange `+` button in the Last Night card (top-right of the card) to open the "Log Sleep Session" modal.
-- Fill `Date`, `Bedtime`, `Wake Time`, `Sleep Quality (0-100)` and `Resting Heart Rate` and press **Log Session**.
-- The app saves the log to the local mock DB (or to your Supabase instance if configured) and shows a small success message.
-
-Notes about the UI
-- The global header `+` button was removed and the page-level `+` on the Sleep card is used for logging (this is intentional to match the design).
-- If you cannot open the modal by clicking the `+`, try a hard refresh (Ctrl+F5) and check the browser console for errors.
-
-## Important files
-- `src/routes/sleep.tsx` — Sleep page UI and the log modal logic.
-- `src/components/AppShell.tsx` — Top-level layout, header, sidebar and previously-global `+` area.
-- `src/lib/supabase.ts` — Mock DB and API helpers (localStorage). Contains `db.addSleepLog`, `db.getSleepLogs` and mock authentication.
-
-## Troubleshooting
-- Dev server fails: run `npm install` then `npm run dev` again.
-- No session / redirected to login: sign in via the Login page with the mock credentials above.
-- Modal not opening when clicking `+`: confirm the button is visible and try refreshing. If still not working, open DevTools → Console and paste any error messages into an issue.
-
-## Tests / Local checks
-- To verify sleep logs persist: log a session, then open the browser devtools → Application → Local Storage → `zenvita_sleeps` to inspect saved entries.
-
-## Next steps (optional)
-- Reintroduce a page-level contextual quick-add menu (anchor to the button) instead of a centered modal.
-- Add an undo toast after logging to allow quick removal of accidental entries.
+```text
+http://localhost:5173
+```
 
 ---
 
-If you want, I can: add an anchored popover for the `+` (instead of a modal), or add an "Undo" toast after logging. Which would you like next?
+# Demo Login Credentials
+
+Use the following credentials to access the application:
+
+```text
+Email: alex@zenvita.ai
+Password: password123
+```
+
+---
+
+# Environment Variables (Optional)
+
+To connect a real Supabase backend, create a `.env` file in the root directory:
+
+```env
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+If these variables are not configured, the application automatically uses a local mock database powered by browser localStorage.
+
+---
+
+# Application Modules
+
+## Workout Tracking
+
+Track workouts and monitor fitness progress.
+
+## Nutrition Monitoring
+
+Record and manage nutrition-related information.
+
+## Sleep Tracking
+
+Users can:
+
+1. Navigate to the Sleep page.
+2. Click the "+" button.
+3. Enter:
+
+   * Date
+   * Bedtime
+   * Wake Time
+   * Sleep Quality
+   * Resting Heart Rate
+4. Click **Log Session**.
+
+The data is stored locally or in Supabase if configured.
+
+---
+
+# Project Structure
+
+```text
+src/
+├── components/
+├── routes/
+├── lib/
+├── hooks/
+├── assets/
+└── styles/
+```
+
+### Important Files
+
+```text
+src/routes/sleep.tsx
+```
+
+Sleep tracking functionality.
+
+```text
+src/components/AppShell.tsx
+```
+
+Application layout and navigation.
+
+```text
+src/lib/supabase.ts
+```
+
+Mock database and Supabase integration layer.
+
+---
+
+# Local Storage
+
+When Supabase is not configured, data is stored locally in the browser.
+
+To inspect stored data:
+
+1. Open Developer Tools.
+2. Navigate to:
+
+```text
+Application → Local Storage
+```
+
+3. View stored entries such as:
+
+```text
+zenvita_sleeps
+```
+
+---
+
+# Troubleshooting
+
+### Install Dependencies
+
+```bash
+npm install
+```
+
+### Start Development Server
+
+```bash
+npm run dev
+```
+
+### Hard Refresh Browser
+
+```text
+Ctrl + F5
+```
+
+### Check Security Issues
+
+```bash
+npm audit
+```
+
+### Automatically Fix Vulnerabilities
+
+```bash
+npm audit fix
+```
+
+---
+
+# Commands for Contributors
+
+Clone repository:
+
+```bash
+git clone https://github.com/Yug-Gupta1212/Zenvita-Fitness.git
+```
+
+Move into project:
+
+```bash
+cd Zenvita-Fitness
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run locally:
+
+```bash
+npm run dev
+```
+
+Create a commit:
+
+```bash
+git add .
+git commit -m "Your commit message"
+git push
+```
+
+---
+
+# Author
+
+Yug Gupta
+
+GitHub: https://github.com/Yug-Gupta1212
+
+---
+
+⭐ If you like this project, consider giving it a star.
+
