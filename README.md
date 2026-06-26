@@ -1,6 +1,6 @@
 # Zenvita-Fitness
 
-A modern Health & Fitness Tracking application built with React, TypeScript, and Vite. The platform helps users monitor their workouts, nutrition, and sleep habits through an intuitive dashboard..
+A modern Health & Fitness Tracking application built with React, TypeScript, and Vite. The platform helps users monitor their workouts, nutrition, and sleep habits through an intuitive dashboard...
 
 ## Features
 
