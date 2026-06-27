@@ -5,6 +5,19 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 export const isRealSupabase = Boolean(supabaseUrl && supabaseAnonKey);
 
+export const missingSupabaseEnvVars = [
+  !supabaseUrl ? "VITE_SUPABASE_URL" : null,
+  !supabaseAnonKey ? "VITE_SUPABASE_ANON_KEY" : null,
+].filter((value): value is string => Boolean(value));
+
+export const supabaseConfigWarning = missingSupabaseEnvVars.length > 0
+  ? `Missing Supabase environment variables: ${missingSupabaseEnvVars.join(", ")}. The app will run in mock mode.`
+  : null;
+
+if (supabaseConfigWarning) {
+  console.warn(`[env] ${supabaseConfigWarning}`);
+}
+
 // Define type schema for mock profile
 export interface Profile {
   id: string;

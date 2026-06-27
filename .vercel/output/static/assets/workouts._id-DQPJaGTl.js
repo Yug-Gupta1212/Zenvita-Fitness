@@ -1,1 +1,0 @@
-import{o as e}from"./useStore-DgTVU5_6.js";import{t}from"./AppShell-CzTi5Egb.js";var n=e(),r=()=>(0,n.jsx)(t,{title:`Not found`,children:(0,n.jsx)(`p`,{className:`text-sm text-muted-foreground`,children:`Workout not found.`})});export{r as notFoundComponent};
