@@ -1,1 +1,0 @@
-import{o as e}from"./useStore-DgTVU5_6.js";import{t}from"./AppShell-BLaCKqO2.js";var n=e(),r=({error:e})=>(0,n.jsx)(t,{title:`Error`,children:(0,n.jsx)(`p`,{className:`text-sm text-muted-foreground`,children:e.message})});export{r as errorComponent};

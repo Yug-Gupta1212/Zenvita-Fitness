@@ -6,6 +6,7 @@ import {
 import { AppShell, SectionHeader } from "@/components/AppShell";
 import { useEffect, useState } from "react";
 import { auth } from "@/lib/supabase";
+import { getSafeLocalStorage } from "@/lib/browser-safe";
 import { motion, AnimatePresence } from "framer-motion";
 
 export const Route = createFileRoute("/community")({
@@ -49,6 +50,7 @@ interface Message {
 function CommunityPage() {
   const [activeTab, setActiveTab] = useState<"feed" | "friends">("feed");
   const [feedFilter, setFeedFilter] = useState<"global" | "following">("global");
+  const storage = getSafeLocalStorage();
   
   // States
   const [profile, setProfile] = useState<any>(null);
@@ -74,7 +76,7 @@ function CommunityPage() {
     });
 
     // Load or set default posts
-    const storedPosts = localStorage.getItem("zenvita_comm_posts");
+    const storedPosts = storage?.getItem("zenvita_comm_posts");
     if (storedPosts) {
       setPosts(JSON.parse(storedPosts));
     } else {
@@ -116,11 +118,11 @@ function CommunityPage() {
         }
       ];
       setPosts(defaultPosts);
-      localStorage.setItem("zenvita_comm_posts", JSON.stringify(defaultPosts));
+      storage?.setItem("zenvita_comm_posts", JSON.stringify(defaultPosts));
     }
 
     // Load or set default members
-    const storedMembers = localStorage.getItem("zenvita_comm_members");
+    const storedMembers = storage?.getItem("zenvita_comm_members");
     if (storedMembers) {
       setMembers(JSON.parse(storedMembers));
     } else {
@@ -131,11 +133,11 @@ function CommunityPage() {
         { id: "m4", name: "Elena Rostova", avatar: "E", bio: "Yoga instructor & flexibility practitioner.", fitnessGoal: "Improve Fitness", isFollowing: false, status: "online" }
       ];
       setMembers(defaultMembers);
-      localStorage.setItem("zenvita_comm_members", JSON.stringify(defaultMembers));
+      storage?.setItem("zenvita_comm_members", JSON.stringify(defaultMembers));
     }
 
     // Load messages database
-    const storedMessages = localStorage.getItem("zenvita_comm_messages");
+    const storedMessages = storage?.getItem("zenvita_comm_messages");
     if (storedMessages) {
       setMessages(JSON.parse(storedMessages));
     } else {
@@ -149,7 +151,7 @@ function CommunityPage() {
         ]
       };
       setMessages(defaultMessages);
-      localStorage.setItem("zenvita_comm_messages", JSON.stringify(defaultMessages));
+      storage?.setItem("zenvita_comm_messages", JSON.stringify(defaultMessages));
     }
   }, []);
 
@@ -165,7 +167,7 @@ function CommunityPage() {
       return post;
     });
     setPosts(updated);
-    localStorage.setItem("zenvita_comm_posts", JSON.stringify(updated));
+    storage?.setItem("zenvita_comm_posts", JSON.stringify(updated));
   };
 
   const handleCreatePost = (e: React.FormEvent) => {
@@ -185,7 +187,7 @@ function CommunityPage() {
 
     const updated = [newPost, ...posts];
     setPosts(updated);
-    localStorage.setItem("zenvita_comm_posts", JSON.stringify(updated));
+    storage?.setItem("zenvita_comm_posts", JSON.stringify(updated));
     setNewPostText("");
   };
 
@@ -197,7 +199,7 @@ function CommunityPage() {
       return m;
     });
     setMembers(updated);
-    localStorage.setItem("zenvita_comm_members", JSON.stringify(updated));
+    storage?.setItem("zenvita_comm_members", JSON.stringify(updated));
   };
 
   // Chat message submit
@@ -222,7 +224,7 @@ function CommunityPage() {
     };
     
     setMessages(updatedMessages);
-    localStorage.setItem("zenvita_comm_messages", JSON.stringify(updatedMessages));
+    storage?.setItem("zenvita_comm_messages", JSON.stringify(updatedMessages));
     setTypedMessage("");
 
     // Simulate realistic typing and response!
@@ -263,7 +265,7 @@ function CommunityPage() {
       };
       
       setMessages(finalMessages);
-      localStorage.setItem("zenvita_comm_messages", JSON.stringify(finalMessages));
+      storage?.setItem("zenvita_comm_messages", JSON.stringify(finalMessages));
       setIsTyping(false);
     }, 1500);
   };

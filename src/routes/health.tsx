@@ -6,6 +6,7 @@ import {
 import { AppShell, SectionHeader, StatCard } from "@/components/AppShell";
 import { useEffect, useState } from "react";
 import { auth, db } from "@/lib/supabase";
+import { getSafeLocalStorage } from "@/lib/browser-safe";
 import { motion, AnimatePresence } from "framer-motion";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, LineChart, Line } from "recharts";
 
@@ -51,8 +52,8 @@ function HealthPage() {
       if (data.session) {
         setUserId(data.session.user.id);
         
-        // Load custom logs from localStorage
-        const storedLogsStr = localStorage.getItem("zenvita_health_metrics_logs");
+        const storage = getSafeLocalStorage();
+        const storedLogsStr = storage?.getItem("zenvita_health_metrics_logs");
         if (storedLogsStr) {
           setLogs(JSON.parse(storedLogsStr));
         } else {
@@ -67,7 +68,7 @@ function HealthPage() {
             { id: "h7", date: new Date().toISOString().split("T")[0], heartRate: 59, hrv: 68, weight: 70.0, bodyFat: 15.7, water: 3.0 }
           ];
           setLogs(defaultLogs);
-          localStorage.setItem("zenvita_health_metrics_logs", JSON.stringify(defaultLogs));
+          storage?.setItem("zenvita_health_metrics_logs", JSON.stringify(defaultLogs));
         }
       }
     };
@@ -88,7 +89,8 @@ function HealthPage() {
 
     const updatedLogs = [...logs.filter((l) => l.date !== logDate), newLog].sort((a, b) => a.date.localeCompare(b.date));
     setLogs(updatedLogs);
-    localStorage.setItem("zenvita_health_metrics_logs", JSON.stringify(updatedLogs));
+    const storage = getSafeLocalStorage();
+    storage?.setItem("zenvita_health_metrics_logs", JSON.stringify(updatedLogs));
     
     // Add notif
     db.addNotification({

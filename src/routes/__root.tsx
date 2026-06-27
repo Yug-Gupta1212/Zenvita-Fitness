@@ -11,6 +11,7 @@ import { useEffect, useState, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportAppError } from "../lib/error-reporting";
+import { getSafeDocument, getSafeLocalStorage, getSafeSessionStorage } from "../lib/browser-safe";
 
 function NotFoundComponent() {
   return (
@@ -116,12 +117,14 @@ function RootShell({ children }: { children: ReactNode }) {
         <script dangerouslySetInnerHTML={{ __html: `
           (function() {
             try {
-              const theme = localStorage.getItem('zenvita-theme') || 'dark';
-              document.documentElement.classList.add(theme);
+              const storage = window.localStorage;
+              const theme = storage.getItem('zenvita-theme') || 'dark';
+              const doc = document.documentElement;
+              doc.classList.add(theme);
               if (theme === 'light') {
-                document.documentElement.classList.remove('dark');
+                doc.classList.remove('dark');
               } else {
-                document.documentElement.classList.remove('light');
+                doc.classList.remove('light');
               }
             } catch (e) {}
           })();
@@ -142,7 +145,8 @@ function RootComponent() {
   const [showSplash, setShowSplash] = useState(false);
 
   useEffect(() => {
-    const hasSeen = sessionStorage.getItem("zenvita_splash_seen");
+    const storage = getSafeSessionStorage();
+    const hasSeen = storage?.getItem("zenvita_splash_seen");
     if (!hasSeen) {
       setShowSplash(true);
     }
@@ -150,7 +154,8 @@ function RootComponent() {
 
   const handleSplashComplete = () => {
     setShowSplash(false);
-    sessionStorage.setItem("zenvita_splash_seen", "true");
+    const storage = getSafeSessionStorage();
+    storage?.setItem("zenvita_splash_seen", "true");
   };
 
   return (

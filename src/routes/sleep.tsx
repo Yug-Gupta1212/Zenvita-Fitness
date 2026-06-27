@@ -3,6 +3,7 @@ import { Moon, Sunrise, Clock, Heart, Plus, X, Sparkles, TrendingUp } from "luci
 import { AppShell, SectionHeader, StatCard } from "@/components/AppShell";
 import { useEffect, useState } from "react";
 import { auth, db, SleepLog } from "@/lib/supabase";
+import { getSafeWindow } from "@/lib/browser-safe";
 import { motion, AnimatePresence } from "framer-motion";
 import { ResponsiveContainer, AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 
@@ -41,10 +42,11 @@ function SleepPage() {
     loadSessionAndData();
 
     const openHandler = () => setOnboardOpen(true);
-    window.addEventListener('zenvita:open-sleep-log', openHandler as EventListener);
+    const win = getSafeWindow();
+    win?.addEventListener('zenvita:open-sleep-log', openHandler as EventListener);
 
     return () => {
-      window.removeEventListener('zenvita:open-sleep-log', openHandler as EventListener);
+      win?.removeEventListener('zenvita:open-sleep-log', openHandler as EventListener);
     };
   }, []);
 

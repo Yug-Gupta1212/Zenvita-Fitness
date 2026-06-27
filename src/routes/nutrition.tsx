@@ -6,6 +6,7 @@ import {
 import { AppShell, SectionHeader } from "@/components/AppShell";
 import { useEffect, useState } from "react";
 import { auth, db, MealLog, FoodItem } from "@/lib/supabase";
+import { getSafeWindow } from "@/lib/browser-safe";
 import { motion, AnimatePresence } from "framer-motion";
 
 export const Route = createFileRoute("/nutrition")({
@@ -80,10 +81,11 @@ function NutritionPage() {
     loadSessionAndData();
 
     const openMealHandler = () => openLogModal("Breakfast");
-    window.addEventListener('zenvita:open-meal-log', openMealHandler as EventListener);
+    const win = getSafeWindow();
+    win?.addEventListener('zenvita:open-meal-log', openMealHandler as EventListener);
 
     return () => {
-      window.removeEventListener('zenvita:open-meal-log', openMealHandler as EventListener);
+      win?.removeEventListener('zenvita:open-meal-log', openMealHandler as EventListener);
     };
   }, []);
 

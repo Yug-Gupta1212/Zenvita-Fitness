@@ -8,6 +8,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { auth, db, Profile, AppNotification, isRealSupabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
+import { getSafeDocument, getSafeLocalStorage, getSafeWindow } from "@/lib/browser-safe";
 
 const tabs = [
   { to: "/", label: "Dashboard", icon: Home },
@@ -36,18 +37,20 @@ export function AppShell({
   const navigate = useNavigate();
   
   const applyTheme = (nextTheme: "light" | "dark") => {
-    if (typeof document === "undefined") return;
-    document.documentElement.classList.remove("light", "dark");
-    document.documentElement.classList.add(nextTheme);
+    const doc = getSafeDocument();
+    if (!doc) return;
+    doc.documentElement.classList.remove("light", "dark");
+    doc.documentElement.classList.add(nextTheme);
   };
 
   // Theme state
   const [theme, setThemeState] = useState<"light" | "dark">("dark");
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    const storage = getSafeLocalStorage();
+    if (!storage) return;
 
-    const savedTheme = window.localStorage.getItem("zenvita-theme") as "light" | "dark" | null;
+    const savedTheme = storage.getItem("zenvita-theme") as "light" | "dark" | null;
     const initialTheme = savedTheme || "dark";
     setThemeState(initialTheme);
     applyTheme(initialTheme);
@@ -55,8 +58,9 @@ export function AppShell({
 
   const setTheme = (newTheme: "light" | "dark") => {
     setThemeState(newTheme);
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem("zenvita-theme", newTheme);
+    const storage = getSafeLocalStorage();
+    if (storage) {
+      storage.setItem("zenvita-theme", newTheme);
     }
     applyTheme(newTheme);
   };

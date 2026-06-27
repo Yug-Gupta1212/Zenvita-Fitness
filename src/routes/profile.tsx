@@ -6,6 +6,7 @@ import {
 import { AppShell, SectionHeader } from "@/components/AppShell";
 import { useEffect, useState } from "react";
 import { auth, db, Profile } from "@/lib/supabase";
+import { getSafeDocument, getSafeLocalStorage, getSafeWindow } from "@/lib/browser-safe";
 import { motion, AnimatePresence } from "framer-motion";
 
 export const Route = createFileRoute("/profile")({
@@ -89,17 +90,21 @@ function ProfilePage() {
 
   // 1. DATA PRIVACY EXPORT
   const handleExportData = () => {
+    const storage = getSafeLocalStorage();
     const data: Record<string, string | null> = {};
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key && key.startsWith("zenvita_")) {
-        data[key] = localStorage.getItem(key);
+    if (storage) {
+      for (let i = 0; i < storage.length; i++) {
+        const key = storage.key(i);
+        if (key && key.startsWith("zenvita_")) {
+          data[key] = storage.getItem(key);
+        }
       }
     }
     
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const doc = getSafeDocument();
+    const a = doc?.createElement("a");
     a.href = url;
     a.download = `zenvita_health_data_${new Date().toISOString().split("T")[0]}.json`;
     a.click();
@@ -132,7 +137,8 @@ Thank you for choosing Zenvita as your AI wellness companion.
 
     const blob = new Blob([reportText], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const doc = getSafeDocument();
+    const a = doc?.createElement("a");
     a.href = url;
     a.download = `zenvita_health_report_${new Date().toISOString().split("T")[0]}.txt`;
     a.click();
@@ -140,8 +146,10 @@ Thank you for choosing Zenvita as your AI wellness companion.
 
   const handleDeleteAccount = () => {
     if (confirm("Are you absolute certain you want to delete your Zenvita account? This clears all logs.")) {
-      localStorage.clear();
-      window.location.href = "/auth/signup";
+      const storage = getSafeLocalStorage();
+      storage?.clear();
+      const win = getSafeWindow();
+      if (win) win.location.href = "/auth/signup";
     }
   };
 

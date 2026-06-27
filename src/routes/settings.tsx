@@ -6,6 +6,7 @@ import {
 import { AppShell, SectionHeader } from "@/components/AppShell";
 import { useEffect, useState } from "react";
 import { auth, db, Profile } from "@/lib/supabase";
+import { getSafeDocument, getSafeLocalStorage, getSafeWindow } from "@/lib/browser-safe";
 import { motion } from "framer-motion";
 
 export const Route = createFileRoute("/settings")({
@@ -61,12 +62,12 @@ function SettingsPage() {
         setActivityLevel(prof.activityLevel || "moderate");
         setFitnessGoal(prof.fitnessGoal || "improve_fitness");
         
-        // Retrieve custom unit & settings configurations from local storage
-        const savedUnits = localStorage.getItem("zenvita_pref_units") || "Metric";
+        const storage = getSafeLocalStorage();
+        const savedUnits = storage?.getItem("zenvita_pref_units") || "Metric";
         setUnits(savedUnits);
-        const savedLanguage = localStorage.getItem("zenvita_pref_language") || "English";
+        const savedLanguage = storage?.getItem("zenvita_pref_language") || "English";
         setLanguage(savedLanguage);
-        const currentTheme = localStorage.getItem("zenvita-theme") || "dark";
+        const currentTheme = storage?.getItem("zenvita-theme") || "dark";
         setDarkMode(currentTheme === "dark");
       }
     };
@@ -103,10 +104,12 @@ function SettingsPage() {
   const handleUpdatePreference = (key: string, val: string) => {
     if (key === "units") {
       setUnits(val);
-      localStorage.setItem("zenvita_pref_units", val);
+      const storage = getSafeLocalStorage();
+      storage?.setItem("zenvita_pref_units", val);
     } else if (key === "language") {
       setLanguage(val);
-      localStorage.setItem("zenvita_pref_language", val);
+      const storage = getSafeLocalStorage();
+      storage?.setItem("zenvita_pref_language", val);
     }
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 3000);
@@ -115,25 +118,31 @@ function SettingsPage() {
   const handleToggleTheme = (isDark: boolean) => {
     setDarkMode(isDark);
     const themeName = isDark ? "dark" : "light";
-    localStorage.setItem("zenvita-theme", themeName);
-    document.documentElement.classList.remove("light", "dark");
-    document.documentElement.classList.add(themeName);
+    const storage = getSafeLocalStorage();
+    const doc = getSafeDocument();
+    storage?.setItem("zenvita-theme", themeName);
+    doc?.documentElement.classList.remove("light", "dark");
+    doc?.documentElement.classList.add(themeName);
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 3000);
   };
 
   const handleExportData = () => {
+    const storage = getSafeLocalStorage();
     const data: Record<string, string | null> = {};
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key && key.startsWith("zenvita_")) {
-        data[key] = localStorage.getItem(key);
+    if (storage) {
+      for (let i = 0; i < storage.length; i++) {
+        const key = storage.key(i);
+        if (key && key.startsWith("zenvita_")) {
+          data[key] = storage.getItem(key);
+        }
       }
     }
     
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const doc = getSafeDocument();
+    const a = doc?.createElement("a");
     a.href = url;
     a.download = `zenvita_health_data_${new Date().toISOString().split("T")[0]}.json`;
     a.click();
@@ -167,7 +176,8 @@ Thank you for choosing Zenvita as your AI wellness companion.
 
     const blob = new Blob([reportText], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const doc = getSafeDocument();
+    const a = doc?.createElement("a");
     a.href = url;
     a.download = `zenvita_health_report_${new Date().toISOString().split("T")[0]}.txt`;
     a.click();
@@ -175,8 +185,10 @@ Thank you for choosing Zenvita as your AI wellness companion.
 
   const handleDeleteAccount = () => {
     if (confirm("Are you absolutely certain you want to delete your Zenvita account? This clears all local records and cannot be undone.")) {
-      localStorage.clear();
-      window.location.href = "/auth/signup";
+      const storage = getSafeLocalStorage();
+      storage?.clear();
+      const win = getSafeWindow();
+      if (win) win.location.href = "/auth/signup";
     }
   };
 
