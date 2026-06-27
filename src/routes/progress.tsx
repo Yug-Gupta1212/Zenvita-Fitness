@@ -32,6 +32,8 @@ function ProgressPage() {
   const [sleeps, setSleeps] = useState<SleepLog[]>([]);
   const [userId, setUserId] = useState("");
 
+  const getDeterministicValue = (seed: number, min: number, max: number) => min + ((seed * 37 + 11) % (max - min + 1));
+
   useEffect(() => {
     const loadSessionAndData = async () => {
       const { data } = await auth.getSession();
@@ -59,12 +61,12 @@ function ProgressPage() {
     
     // Sum meals on this day
     const dayMeals = meals.filter((m) => m.createdAt.startsWith(dateStr));
-    const consumed = dayMeals.length > 0 ? dayMeals.reduce((sum, m) => sum + m.calories, 0) : Math.floor(Math.random() * 800) + 1600;
+    const consumed = dayMeals.length > 0 ? dayMeals.reduce((sum, m) => sum + m.calories, 0) : 1600 + getDeterministicValue(i + 1, 0, 800);
     
-    // Burned: default baseline + workout random offset
+    // Burned: default baseline + deterministic offset
     const daySleep = sleeps.find((s) => s.date === dateStr);
     const hasWorkout = i % 2 === 0 || i === 6;
-    const burned = hasWorkout ? Math.floor(Math.random() * 200) + 2200 : Math.floor(Math.random() * 150) + 1800;
+    const burned = hasWorkout ? 2200 + getDeterministicValue(i + 3, 0, 200) : 1800 + getDeterministicValue(i + 7, 0, 150);
 
     return {
       name: dayName,

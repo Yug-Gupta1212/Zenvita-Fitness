@@ -17,14 +17,18 @@ function SleepPage() {
   const [saving, setSaving] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
 
+  const getTodayDate = () => new Date().toISOString().split("T")[0];
+
   // Form State
   const [bedtime, setBedtime] = useState("22:30");
   const [wakeTime, setWakeTime] = useState("06:30");
   const [quality, setQuality] = useState(85);
   const [restingHeartRate, setRestingHeartRate] = useState(58);
-  const [logDate, setLogDate] = useState(new Date().toISOString().split("T")[0]);
+  const [logDate, setLogDate] = useState("");
 
   useEffect(() => {
+    setLogDate(getTodayDate());
+
     const loadSessionAndData = async () => {
       const { data } = await auth.getSession();
       if (data.session) {

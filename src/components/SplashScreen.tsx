@@ -22,28 +22,23 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
     return () => timers.forEach(clearTimeout);
   }, [onComplete]);
 
-  // Generate random coordinates for floating background particles
-  const particles = useMemo(() => Array.from({ length: 25 }).map((_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    y: Math.random() * 100 + 50,
-    size: Math.random() * 3 + 1,
-    duration: Math.random() * 3 + 2,
-    delay: Math.random() * 1,
-  })), []);
+  // Generate deterministic coordinates for floating background particles
+  const particles = useMemo(() => Array.from({ length: 25 }).map((_, i) => {
+    const seed = (i + 1) * 37;
+    return {
+      id: i,
+      x: (seed * 7) % 100,
+      y: 50 + ((seed * 13) % 50),
+      size: 1 + ((seed * 3) % 4),
+      duration: 2 + ((seed * 5) % 3),
+      delay: (seed % 10) / 10,
+    };
+  }), []);
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#0D0D0D] overflow-hidden">
-      {/* Background Video */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover opacity-30"
-      >
-        <source src="/running.mp4" type="video/mp4" />
-      </video>
+      {/* Background Gradient */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(232,93,47,0.2),_transparent_55%)]" />
 
       {/* Background Particles */}
       <div className="absolute inset-0 pointer-events-none opacity-40">

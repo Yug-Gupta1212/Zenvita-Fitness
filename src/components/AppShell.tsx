@@ -35,22 +35,30 @@ export function AppShell({
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   
+  const applyTheme = (nextTheme: "light" | "dark") => {
+    if (typeof document === "undefined") return;
+    document.documentElement.classList.remove("light", "dark");
+    document.documentElement.classList.add(nextTheme);
+  };
+
   // Theme state
   const [theme, setThemeState] = useState<"light" | "dark">("dark");
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("zenvita-theme") as "light" | "dark" | null;
+    if (typeof window === "undefined") return;
+
+    const savedTheme = window.localStorage.getItem("zenvita-theme") as "light" | "dark" | null;
     const initialTheme = savedTheme || "dark";
     setThemeState(initialTheme);
-    document.documentElement.classList.remove("light", "dark");
-    document.documentElement.classList.add(initialTheme);
+    applyTheme(initialTheme);
   }, []);
 
   const setTheme = (newTheme: "light" | "dark") => {
     setThemeState(newTheme);
-    localStorage.setItem("zenvita-theme", newTheme);
-    document.documentElement.classList.remove("light", "dark");
-    document.documentElement.classList.add(newTheme);
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("zenvita-theme", newTheme);
+    }
+    applyTheme(newTheme);
   };
   
   // Auth state

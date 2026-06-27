@@ -33,8 +33,10 @@ function HealthPage() {
   const [logs, setLogs] = useState<HealthLog[]>([]);
   const [logModalOpen, setLogModalOpen] = useState(false);
 
+  const getTodayDate = () => new Date().toISOString().split("T")[0];
+
   // Form State
-  const [logDate, setLogDate] = useState(new Date().toISOString().split("T")[0]);
+  const [logDate, setLogDate] = useState("");
   const [heartRate, setHeartRate] = useState(65);
   const [hrv, setHrv] = useState(58);
   const [weight, setWeight] = useState(70);
@@ -42,6 +44,8 @@ function HealthPage() {
   const [water, setWater] = useState(2.5);
 
   useEffect(() => {
+    setLogDate(getTodayDate());
+
     const loadSessionAndLogs = async () => {
       const { data } = await auth.getSession();
       if (data.session) {
