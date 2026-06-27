@@ -1,5 +1,6 @@
 {
-  "name": "tanstack_start_ts",
+  "name": "zenvita-fitness",
+  "description": "Zenvita Fitness wellness and progress tracking app",
   "private": true,
   "sideEffects": false,
   "type": "module",
